@@ -8,6 +8,7 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 from collections import deque
 import os
 import pyttsx3
+import subprocess
 
 class ThreadedVideoCapture:
     def __init__(self, src=0, width=640, height=480):
@@ -210,13 +211,11 @@ class OptimizedFacialExpressionDetector:
 
     def speak_message(self, message):
         """
-        Speak the encouraging message using TTS, re-initializing the engine each time for reliability.
+        Speak the encouraging message using Windows SAPI via PowerShell for reliability.
         """
-        import pyttsx3
-        engine = pyttsx3.init()
-        engine.say(message)
-        engine.runAndWait()
-        engine.stop()
+        subprocess.Popen(
+            ['powershell', '-Command', f"Add-Type –AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('{message}')"]
+        )
 
     def run_detection(self):
         """
